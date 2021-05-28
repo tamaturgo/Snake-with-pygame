@@ -1,37 +1,19 @@
 import pygame
 import time
-import random
+import apple
 
-green = (0, 155, 0)
+# Game Variables
 pygame.init()
 game_cycle = True
 screen = pygame.display.set_mode((800, 800))
 screen_bg = pygame.image.load("assets/game_screen.png")
-
-
-def snake(list_position):
-    i = 0
-    for pos_xy in list_position:
-        if not i == 0 and not i == len(list_sprites)-1:
-            if list_sprites[i-1][1] == 0 or list_sprites[i-1][1] == 2:
-                list_sprites[i][0] = pygame.image.load("assets/snake_v.png")
-            elif list_sprites[i-1][1] == 3 or list_sprites[i-1][1] == 1:
-                list_sprites[i][0] = pygame.image.load("assets/snake_h.png")
-                print("DIREITA OU ESQUERDA", list_sprites[i-1][1])
-
-            for j in range(len(list_sprites), len(list_sprites)-1):
-                list_sprites[j][0] = list_sprites[j-1][0]
-        screen.blit(list_sprites[i][0], [pos_xy[0], pos_xy[1]])
-        i += 1
-
-
+# Apple Controller
 point = pygame.image.load("assets/apple.png")
-point_x = -50
-point_y = -50
+point_pos_xy = [-100, -100]
 point_spawned = False
 last_key = 3  # 0 - Down, 1 - Right, 2 - Top, 3 - Left
-
-pos_x = 52 + 32
+# Snake Controller
+pos_x = 52 + 64
 pos_y = 52
 speed_x = 32
 speed_y = 0
@@ -40,22 +22,46 @@ snake_size = 1
 snake_head = [pos_x, pos_y]
 tail = [52, 52]
 list_snake.append(tail)
+tail = [52+32, 52]
+list_snake.append(tail)
 list_snake.append(snake_head)
-list_sprites = [[pygame.image.load("assets/tail_left.png"), 1],
+list_sprites = [[pygame.image.load("assets/snake_body.png"), 1],
+                [pygame.image.load("assets/snake_body.png"), 1],
                 [pygame.image.load("assets/head_right.png"), 1]]
 
 
+def draw_snake(list_position):
+    i = 0
+    for pos_xy in list_position:
+        if not i == 0 and not i == len(list_sprites)-1:
+            list_sprites[i][0] = pygame.image.load("assets/snake_body.png")
+        screen.blit(list_sprites[i][0], [pos_xy[0], pos_xy[1]])
+        i += 1
+
+
+# Game Cycle
 while game_cycle:
 
-    if not point_spawned:
-        point_x = 52 + random.randint(0, 21) * 32
-        point_y = 51 + random.randint(0, 21) * 32
-        point_spawned = True
+    if not apple.apple_spawned:
+        point_pos_xy = apple.spawn_apple()
+        apple.apple_spawned = True
 
+    # position next move
+    pos_x += speed_x
+    pos_y += speed_y
+
+    # Snake moving
+    snake_head = [pos_x, pos_y]
+    list_snake.append(snake_head)
+
+    # Removing the last block
+    if len(list_snake) > snake_size:
+        del list_snake[0]
+
+    # Updating Screen
     screen.blit(screen_bg, (0, 0))
-    screen.blit(point, (point_x, point_y))
-
-    pygame.display.flip()
+    draw_snake(list_snake)
+    screen.blit(point, point_pos_xy)
 
     # KeyBoard Events
     for event in pygame.event.get():
@@ -100,20 +106,7 @@ while game_cycle:
                 snake_size += 1
                 list_snake.append(snake_head)
 
-    pos_x += speed_x
-    pos_y += speed_y
-
-    snake_head = [pos_x, pos_y]
-
-    list_snake.append(snake_head)
-
-    if len(list_snake) > snake_size:
-        del list_snake[0]
-
-    snake(list_snake)
-
-    pygame.display.update()
-
+    pygame.display.flip()
     time.sleep(1 / 8)
 
 pygame.quit()
