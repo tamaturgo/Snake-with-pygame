@@ -8,10 +8,14 @@ screen = pygame.display.set_mode((800, 800))
 screen_bg = pygame.image.load("assets/game_screen.png")
 
 player = pygame.image.load("assets/head_bottom.png")
+player_tail = pygame.image.load("assets/tail_top.png")
 player_head_x = 52 + 32
 player_head_y = 52 + 32
 player_dx = 0
 player_dy = 32
+player_size = 1
+player_segment = [player, player_tail]
+body_pos = [(player_head_x, player_head_y), (player_head_x, player_head_y - 32)]
 
 point = pygame.image.load("assets/apple.png")
 point_x = -50
@@ -28,6 +32,7 @@ while game_cycle:
     # Player Collider with wall
     player_head_x += player_dx
     player_head_y += player_dy
+
     if player_head_x < 52:
         player_head_x = 52
     if player_head_x > 724:
@@ -40,9 +45,20 @@ while game_cycle:
     player_xy = (player_head_x, player_head_y)
     point_xy = (point_x, point_y)
     screen.blit(screen_bg, (0, 0))
-    screen.blit(player, player_xy)
-    screen.blit(point, point_xy)
+    screen.blit(point, (point_x, point_y))
 
+   ''' for i in range(len(body_pos)):
+        size = len(body_pos)-1
+        if i == 0:
+            body_pos[i] = player_xy
+            player_segment[i] = player
+
+        body_pos[size] = body_pos[size-1]
+        tail_x = body_pos[i][0] + 0
+        tail_y = body_pos[i][1] - 32
+        body_pos[size] = (tail_x, tail_y)
+        screen.blit(player_segment[i], body_pos[i])
+'''
     pygame.display.flip()
 
     # KeyBoard Events
