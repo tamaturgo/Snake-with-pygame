@@ -2,20 +2,17 @@ import pygame
 import time
 import random
 
+green = (0, 155, 0)
 pygame.init()
 game_cycle = True
 screen = pygame.display.set_mode((800, 800))
 screen_bg = pygame.image.load("assets/game_screen.png")
 
-player = pygame.image.load("assets/head_bottom.png")
-player_tail = pygame.image.load("assets/tail_top.png")
-player_head_x = 52 + 32
-player_head_y = 52 + 32
-player_dx = 0
-player_dy = 32
-player_size = 1
-player_segment = [player, player_tail]
-body_pos = [(player_head_x, player_head_y), (player_head_x, player_head_y - 32)]
+
+def snake(size, list):
+    for posx_y in list:
+        pygame.draw.rect(screen, (255, 255, 255), [posx_y[0], posx_y[1], 32, 32])
+
 
 point = pygame.image.load("assets/apple.png")
 point_x = -50
@@ -23,42 +20,24 @@ point_y = -50
 point_spawned = False
 last_key = 0  # 0 - Down, 1 - Right, 2 - Top, 3 - Left
 
+pos_x = 52
+pos_y = 52
+speed_x = 32
+speed_y = 0
+list_snake = []
+snake_size = 1
+snake_head = [pos_x, pos_y]
+list_snake.append(snake_head)
+
 while game_cycle:
     if not point_spawned:
         point_x = 52 + random.randint(0, 21) * 32
         point_y = 51 + random.randint(0, 21) * 32
         point_spawned = True
 
-    # Player Collider with wall
-    player_head_x += player_dx
-    player_head_y += player_dy
-
-    if player_head_x < 52:
-        player_head_x = 52
-    if player_head_x > 724:
-        player_head_x = 724
-    if player_head_y < 50:
-        player_head_y = 50
-    if player_head_y > 724:
-        player_head_y = 724
-
-    player_xy = (player_head_x, player_head_y)
-    point_xy = (point_x, point_y)
     screen.blit(screen_bg, (0, 0))
     screen.blit(point, (point_x, point_y))
 
-   ''' for i in range(len(body_pos)):
-        size = len(body_pos)-1
-        if i == 0:
-            body_pos[i] = player_xy
-            player_segment[i] = player
-
-        body_pos[size] = body_pos[size-1]
-        tail_x = body_pos[i][0] + 0
-        tail_y = body_pos[i][1] - 32
-        body_pos[size] = (tail_x, tail_y)
-        screen.blit(player_segment[i], body_pos[i])
-'''
     pygame.display.flip()
 
     # KeyBoard Events
@@ -69,28 +48,47 @@ while game_cycle:
             if event.key == pygame.K_ESCAPE:
                 game_cycle = False
             if (event.key == pygame.K_DOWN or event.key == pygame.K_s) and not (last_key == 2):
-                player_dy = 32
-                player_dx = 0
+                speed_y = 32
+                speed_x = 0
                 last_key = 0
+                snake_size += 1
                 player = pygame.image.load("assets/head_bottom.png")
 
-            if (event.key == pygame.K_RIGHT or event.key == pygame.K_d) and not(last_key == 3):
-                player_dy = 0
-                player_dx = 32
+            if (event.key == pygame.K_RIGHT or event.key == pygame.K_d) and not (last_key == 3):
+                speed_y = 0
+                speed_x = 32
                 last_key = 1
+                snake_size += 1
                 player = pygame.image.load("assets/head_right.png")
 
-            if (event.key == pygame.K_UP or event.key == pygame.K_w) and not(last_key == 0):
-                player_dy = -32
-                player_dx = 0
+            if (event.key == pygame.K_UP or event.key == pygame.K_w) and not (last_key == 0):
+                speed_y = -32
+                speed_x = 0
                 last_key = 2
+                snake_size += 1
                 player = pygame.image.load("assets/head_top.png")
 
-            if (event.key == pygame.K_LEFT or event.key == pygame.K_a) and not(last_key == 1):
-                player_dy = 0
-                player_dx = -32
+            if (event.key == pygame.K_LEFT or event.key == pygame.K_a) and not (last_key == 1):
+                speed_y = 0
+                speed_x = -32
                 last_key = 3
+                snake_size += 1
+                list_snake.append(snake_head)
                 player = pygame.image.load("assets/head_left.png")
+
+    pos_x += speed_x
+    pos_y += speed_y
+
+    snake_head = [pos_x, pos_y]
+
+    list_snake.append(snake_head)
+
+    if len(list_snake) > snake_size:
+        del list_snake[0]
+
+    snake(snake_size, list_snake)
+
+    pygame.display.update()
 
     time.sleep(1 / 8)
 
