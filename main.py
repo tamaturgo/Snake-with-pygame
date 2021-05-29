@@ -2,6 +2,10 @@ import pygame
 import time
 import apple
 
+# Score Hud
+trophy = pygame.image.load("assets/images/shiny_trophy.png")
+trophy_pos = [740, 0]
+apple_catch_pos = [50, 0]
 # Game Variables
 pygame.init()
 game_cycle = True
@@ -62,6 +66,8 @@ while game_cycle:
     screen.blit(screen_bg, (0, 0))
     draw_snake(list_snake)
     screen.blit(point, point_pos_xy)
+    screen.blit(trophy, trophy_pos)
+    screen.blit(point, apple_catch_pos)
 
     # KeyBoard Events
     for event in pygame.event.get():
