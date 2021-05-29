@@ -62,10 +62,10 @@ while game_cycle:
     if not apple.apple_spawned:
         aux = random.randint(1, 10)
         if aux == 1:
-            point = pygame.image.load("assets/images/shiny_trophy.png")
+            point = pygame.image.load("assets/images/golden_apple.png")
             apple_value = 5
         elif aux == 2:
-            point = pygame.image.load("assets/images/snake_body.png")
+            point = pygame.image.load("assets/images/meat.png")
             apple_value = 2
         else:
             point = pygame.image.load("assets/images/apple.png")
