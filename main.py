@@ -71,13 +71,11 @@ while game_cycle:
             if event.key == pygame.K_ESCAPE:
                 game_cycle = False
             if (event.key == pygame.K_DOWN or event.key == pygame.K_s) and not (last_key == 2):
+                assets_ref = [pygame.image.load("assets/images/head_bottom.png"), 0]
+                list_sprites.append(assets_ref)
                 speed_y = 32
                 speed_x = 0
                 last_key = 0
-                snake_size += 1
-                assets_ref = [pygame.image.load("assets/images/head_bottom.png"), 0]
-                list_sprites.append(assets_ref)
-                list_snake.append(snake_head)
 
             if (event.key == pygame.K_RIGHT or event.key == pygame.K_d) and not (last_key == 3):
                 assets_ref = [pygame.image.load("assets/images/head_right.png"), 1]
@@ -85,8 +83,6 @@ while game_cycle:
                 speed_y = 0
                 speed_x = 32
                 last_key = 1
-                snake_size += 1
-                list_snake.append(snake_head)
 
             if (event.key == pygame.K_UP or event.key == pygame.K_w) and not (last_key == 0):
                 assets_ref = [pygame.image.load("assets/images/head_top.png"), 2]
@@ -94,8 +90,6 @@ while game_cycle:
                 speed_y = -32
                 speed_x = 0
                 last_key = 2
-                snake_size += 1
-                list_snake.append(snake_head)
 
             if (event.key == pygame.K_LEFT or event.key == pygame.K_a) and not (last_key == 1):
                 assets_ref = [pygame.image.load("assets/images/head_left.png"), 3]
@@ -103,18 +97,22 @@ while game_cycle:
                 speed_y = 0
                 speed_x = -32
                 last_key = 3
-                snake_size += 1
-                list_snake.append(snake_head)
 
+    # Snake collision with the side walls
     if snake_head[0] < 52 or snake_head[0] > 800 - 52:
         game_cycle = False
     if snake_head[1] < 52 or snake_head[1] > 800 - 52:
         game_cycle = False
-    print(point_pos_xy[0], " ", point_pos_xy[1])
-    print(snake_head[0], " ", snake_head[1])
 
+    # Snake collision with the body
+    for i in list_snake[:-1]:
+        if i == snake_head:
+            game_cycle = False
+
+    # Eating the apple and increasing the snake's body
     if snake_head[0] == point_pos_xy[0] and snake_head[1] - 1 == point_pos_xy[1]:
-        print(apple.apple_spawned)
+        snake_size += 1
+        list_snake.append(snake_head)
         apple.apple_spawned = False
 
     pygame.display.flip()
