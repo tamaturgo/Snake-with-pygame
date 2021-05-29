@@ -1,6 +1,7 @@
 import pygame
 import time
 import apple
+import random
 
 # Game Variables
 pygame.init()
@@ -32,6 +33,7 @@ pos_x = 52 + 64
 pos_y = 52 + 32
 speed_x = 32
 speed_y = 0
+apple_value = 1
 list_snake = []
 snake_size = 1
 snake_head = [pos_x, pos_y]
@@ -58,6 +60,17 @@ def draw_snake(list_position):
 while game_cycle:
 
     if not apple.apple_spawned:
+        aux = random.randint(1, 10)
+        if aux == 1:
+            point = pygame.image.load("assets/images/shiny_trophy.png")
+            apple_value = 5
+        elif aux == 2:
+            point = pygame.image.load("assets/images/snake_body.png")
+            apple_value = 2
+        else:
+            point = pygame.image.load("assets/images/apple.png")
+            apple_value = 1
+
         point_pos_xy = apple.spawn_apple()
         apple.apple_spawned = True
 
@@ -143,11 +156,19 @@ while game_cycle:
 
     # Eating the apple and increasing the snake's body
     if snake_head[0] == point_pos_xy[0] and snake_head[1] - 1 == point_pos_xy[1]:
-        snake_size += 1
-        score += 1
-        list_snake.append(snake_head)
+        if apple_value == 2:
+            snake_size += 5
+            for i in range(5):
+                list_snake.append(snake_head)
+                list_sprites.append(assets_ref)
+        else:
+            snake_size += 1
+            list_snake.append(snake_head)
+            list_sprites.append(assets_ref)
+            
+        score += apple_value
         apple.apple_spawned = False
-        list_sprites.append(assets_ref)
+
 
     pygame.display.flip()
     time.sleep(1 / 8)
