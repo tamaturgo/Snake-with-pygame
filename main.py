@@ -6,35 +6,35 @@ import apple
 pygame.init()
 game_cycle = True
 screen = pygame.display.set_mode((800, 800))
-screen_bg = pygame.image.load("assets/game_screen.png")
+screen_bg = pygame.image.load("assets/images/game_screen.png")
 # Apple Controller
-point = pygame.image.load("assets/apple.png")
+point = pygame.image.load("assets/images/apple.png")
 point_pos_xy = [-100, -100]
 point_spawned = False
 last_key = 3  # 0 - Down, 1 - Right, 2 - Top, 3 - Left
 # Snake Controller
 pos_x = 52 + 64
-pos_y = 52
+pos_y = 52 + 32
 speed_x = 32
 speed_y = 0
 list_snake = []
 snake_size = 1
 snake_head = [pos_x, pos_y]
-tail = [52, 52]
+tail = [52, 52+32]
 list_snake.append(tail)
-tail = [52+32, 52]
+tail = [52+32, 52 + 32]
 list_snake.append(tail)
 list_snake.append(snake_head)
-list_sprites = [[pygame.image.load("assets/snake_body.png"), 1],
-                [pygame.image.load("assets/snake_body.png"), 1],
-                [pygame.image.load("assets/head_right.png"), 1]]
+list_sprites = [[pygame.image.load("assets/images/snake_body.png"), 1],
+                [pygame.image.load("assets/images/snake_body.png"), 1],
+                [pygame.image.load("assets/images/head_right.png"), 1]]
 
 
 def draw_snake(list_position):
     i = 0
     for pos_xy in list_position:
         if not i == 0 and not i == len(list_sprites)-1:
-            list_sprites[i][0] = pygame.image.load("assets/snake_body.png")
+            list_sprites[i][0] = pygame.image.load("assets/images/snake_body.png")
         screen.blit(list_sprites[i][0], [pos_xy[0], pos_xy[1]])
         i += 1
 
@@ -75,12 +75,12 @@ while game_cycle:
                 speed_x = 0
                 last_key = 0
                 snake_size += 1
-                assets_ref = [pygame.image.load("assets/head_bottom.png"), 0]
+                assets_ref = [pygame.image.load("assets/images/head_bottom.png"), 0]
                 list_sprites.append(assets_ref)
                 list_snake.append(snake_head)
 
             if (event.key == pygame.K_RIGHT or event.key == pygame.K_d) and not (last_key == 3):
-                assets_ref = [pygame.image.load("assets/head_right.png"), 1]
+                assets_ref = [pygame.image.load("assets/images/head_right.png"), 1]
                 list_sprites.append(assets_ref)
                 speed_y = 0
                 speed_x = 32
@@ -89,7 +89,7 @@ while game_cycle:
                 list_snake.append(snake_head)
 
             if (event.key == pygame.K_UP or event.key == pygame.K_w) and not (last_key == 0):
-                assets_ref = [pygame.image.load("assets/head_top.png"), 2]
+                assets_ref = [pygame.image.load("assets/images/head_top.png"), 2]
                 list_sprites.append(assets_ref)
                 speed_y = -32
                 speed_x = 0
@@ -98,13 +98,24 @@ while game_cycle:
                 list_snake.append(snake_head)
 
             if (event.key == pygame.K_LEFT or event.key == pygame.K_a) and not (last_key == 1):
-                assets_ref = [pygame.image.load("assets/head_left.png"), 3]
+                assets_ref = [pygame.image.load("assets/images/head_left.png"), 3]
                 list_sprites.append(assets_ref)
                 speed_y = 0
                 speed_x = -32
                 last_key = 3
                 snake_size += 1
                 list_snake.append(snake_head)
+
+    if snake_head[0] < 52 or snake_head[0] > 800 - 52:
+        game_cycle = False
+    if snake_head[1] < 52 or snake_head[1] > 800 - 52:
+        game_cycle = False
+    print(point_pos_xy[0], " ", point_pos_xy[1])
+    print(snake_head[0], " ", snake_head[1])
+
+    if snake_head[0] == point_pos_xy[0] and snake_head[1] - 1 == point_pos_xy[1]:
+        print(apple.apple_spawned)
+        apple.apple_spawned = False
 
     pygame.display.flip()
     time.sleep(1 / 8)
