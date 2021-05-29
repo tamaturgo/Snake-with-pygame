@@ -2,15 +2,26 @@ import pygame
 import time
 import apple
 
+# Game Variables
+pygame.init()
+game_cycle = True
+screen = pygame.display.set_mode((800, 750))
+screen_bg = pygame.image.load("assets/images/game_screen.png")
+score = 0
+
+# -----------------------------------------------------
+# Record's Variable
+record = 0
+# -----------------------------------------------------
+
 # Score Hud
 trophy = pygame.image.load("assets/images/shiny_trophy.png")
 trophy_pos = [740, 0]
 apple_catch_pos = [50, 0]
-# Game Variables
-pygame.init()
-game_cycle = True
-screen = pygame.display.set_mode((800, 800))
-screen_bg = pygame.image.load("assets/images/game_screen.png")
+initial_score_font = pygame.font.Font('assets/fonts/GamegirlClassic-9MVj.ttf', 32)
+
+record_score_font = pygame.font.Font('assets/fonts/GamegirlClassic-9MVj.ttf', 32)
+
 # Apple Controller
 point = pygame.image.load("assets/images/apple.png")
 point_pos_xy = [-100, -100]
@@ -63,11 +74,23 @@ while game_cycle:
         del list_snake[0]
 
     # Updating Screen
+    # Score
+    initial_score_text = initial_score_font.render('%03d' % score, True, (255, 255, 255))
+    initial_score_text_rect = initial_score_text.get_rect()
+    initial_score_text_rect.center = (150, 20)
+
+    # Record
+    record_score_text = record_score_font.render('%03d' % record, True, (255, 255, 255))
+    record_score_text_rect = record_score_text.get_rect()
+    record_score_text_rect.center = (670, 20)
+
     screen.blit(screen_bg, (0, 0))
     draw_snake(list_snake)
     screen.blit(point, point_pos_xy)
     screen.blit(trophy, trophy_pos)
     screen.blit(point, apple_catch_pos)
+    screen.blit(initial_score_text, initial_score_text_rect)
+    screen.blit(record_score_text, record_score_text_rect)
 
     # KeyBoard Events
     for event in pygame.event.get():
@@ -121,6 +144,7 @@ while game_cycle:
     # Eating the apple and increasing the snake's body
     if snake_head[0] == point_pos_xy[0] and snake_head[1] - 1 == point_pos_xy[1]:
         snake_size += 1
+        score += 1
         list_snake.append(snake_head)
         apple.apple_spawned = False
         list_sprites.append(assets_ref)
