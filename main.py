@@ -243,7 +243,7 @@ while game_cycle:
         initial_score_text_rect.center = (150, 20)
 
         # Record
-        record_score_text = game_girl_32.render('%03d' % record, True, (255, 255, 255))
+        record_score_text = game_girl_32.render('%03d' % persistence.consult_score(), True, (255, 255, 255))
         record_score_text_rect = record_score_text.get_rect()
         record_score_text_rect.center = (670, 20)
 
