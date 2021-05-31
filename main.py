@@ -2,6 +2,7 @@ import pygame
 import time
 import apple
 import random
+import persistence
 
 # Sounds
 pygame.mixer.init()
@@ -264,15 +265,15 @@ while game_cycle:
             initial_score_text_rect.center = (400, 390)
             screen.blit(initial_score_text, initial_score_text_rect)
 
+            record_score_text = game_girl_32.render("Best score: " + '%03d' % persistence.consult_score(), True, (255, 255, 255))
+            record_score_text_rect = record_score_text.get_rect()
+            record_score_text_rect.center = (400, 430)
+            screen.blit(record_score_text, record_score_text_rect)
+
             initial_score_text = game_girl_20.render("Press anything to restart", True, (255, 255, 255))
             initial_score_text_rect = initial_score_text.get_rect()
             initial_score_text_rect.center = (400, 480)
             screen.blit(initial_score_text, initial_score_text_rect)
-
-            record_score_text = game_girl_32.render("Best score: ", True, (255, 255, 255))
-            record_score_text_rect = record_score_text.get_rect()
-            record_score_text_rect.center = (400, 430)
-            screen.blit(record_score_text, record_score_text_rect)
 
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
@@ -362,6 +363,7 @@ while game_cycle:
 
             score += apple_value
             apple.apple_spawned = False
+            persistence.update_score(score)
 
     pygame.display.flip()
     time.sleep(1 / 12)
